@@ -1,0 +1,49 @@
+# WordPress core (cài lại bằng Local / WP-CLI / Composer)
+/wp-admin/
+/wp-includes/
+/index.php
+/wp-activate.php
+/wp-blog-header.php
+/wp-comments-post.php
+/wp-cron.php
+/wp-links-opml.php
+/wp-load.php
+/wp-login.php
+/wp-mail.php
+/wp-settings.php
+/wp-signup.php
+/wp-trackback.php
+/xmlrpc.php
+/license.txt
+/readme.html
+/wp-config-sample.php
+
+# Secrets & môi trường local
+wp-config.php
+local-xdebuginfo.php
+
+# Media & runtime
+/wp-content/uploads/
+/wp-content/cache/
+/wp-content/upgrade/
+/wp-content/backup*/
+/wp-content/advanced-cache.php
+/wp-content/wp-cache-config.php
+/wp-content/object-cache.php
+
+# Theme mặc định chưa chỉnh (giữ lại twentytwentyfive đang học/sửa)
+/wp-content/themes/twentytwentythree/
+/wp-content/themes/twentytwentyfour/
+/wp-content/plugins/hello.php
+/wp-content/plugins/akismet/
+
+# OS / IDE / deps
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+vendor/
+.idea/
+.vscode/
+*.sql
+*.zip

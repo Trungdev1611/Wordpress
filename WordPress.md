@@ -1,4 +1,4 @@
-vậy là khi tạo mới wp, họ cho sẵn những bảng nào rồi
+**vậy là khi tạo mới wp, họ cho sẵn những bảng nào rồi**
 
 Khi bạn cài đặt mới tinh một website WordPress (chưa cài thêm bất kỳ plugin hay theme phụ nào), WordPress sẽ tự động khởi tạo đúng 12 bảng tiêu chuẩn trong CSDL.
 
@@ -35,7 +35,10 @@ wp_links: Bảng cũ còn sót lại từ các phiên bản WordPress trước (
 Tóm lại:
 Bất kỳ tính năng mới nào (như Phân quyền VAA DATA, Sản phẩm, Tài liệu) xuất hiện sau này đều chỉ là dữ liệu nhét thêm vào 12 bảng này hoặc do các Plugin tự tạo thêm bảng mới (ví dụ bảng wp_user_role_cat_pro mà bạn thấy ở dự án VAA DATA là bảng tùy biến tạo thêm).
 
-mấy cái postmeta, usermeta là sau khi cài AFC mưới có hay ban đầu cũng có rồi
+
+
+
+**mấy cái postmeta, usermeta là sau khi cài AFC mưới có hay ban đầu cũng có rồi**
 
 Ban đầu cài WordPress xong là đã có sẵn rồi, không cần cài ACF mới có!
 

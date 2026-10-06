@@ -1,73 +1,130 @@
-**vậy là khi tạo mới wp, họ cho sẵn những bảng nào rồi**
+# WordPress: 12 bảng dữ liệu mặc định trong database
 
-Khi bạn cài đặt mới tinh một website WordPress (chưa cài thêm bất kỳ plugin hay theme phụ nào), WordPress sẽ tự động khởi tạo đúng 12 bảng tiêu chuẩn trong CSDL.
+Khi bạn cài đặt một website WordPress mới, trước khi thêm bất kỳ plugin hay theme nào, hệ thống sẽ tự động tạo ra đúng 12 bảng cơ bản trong cơ sở dữ liệu.
 
-Dưới đây là danh sách 12 bảng "nguyên bản" kèm nhiệm vụ chính của từng bảng:
+Dưới đây là danh sách các bảng gốc và chức năng chính của từng bảng.
 
-1. Nhóm Quản Lý Nội Dung (Core Content)
-wp_posts: Bảng trung tâm lớn nhất, lưu tất cả bài viết, trang, sản phẩm, file đính kèm, menu, bản lưu nháp/revision...
+---
 
-wp_postmeta: Lưu các thông tin phụ, thuộc tính mở rộng (Custom Fields/ACF) đi kèm với từng bài viết trong wp_posts.
+## 1) Nhóm quản lý nội dung (Core Content)
 
-wp_comments: Lưu toàn bộ bình luận, đánh giá của người dùng trên bài viết.
+| Bảng | Chức năng |
+|------|-----------|
+| `wp_posts` | Bảng trung tâm của WordPress, lưu trữ tất cả bài viết, trang, sản phẩm, file đính kèm, menu, bản nháp và revision. |
+| `wp_postmeta` | Lưu trữ các thông tin mở rộng cho bài viết như custom fields, ảnh đại diện, cấu hình riêng của bài viết. |
+| `wp_comments` | Lưu toàn bộ bình luận, đánh giá, phản hồi của người dùng trên bài viết. |
+| `wp_commentmeta` | Lưu thông tin phụ cho từng bình luận như trạng thái duyệt, điểm đánh giá, dữ liệu bổ sung. |
 
-wp_commentmeta: Lưu các thông tin bổ sung cho bình luận (ví dụ: điểm đánh giá 5 sao, trạng thái duyệt...).
+---
 
-2. Nhóm Quản Lý Phân Loại (Taxonomy)
-wp_terms: Lưu tên và đường dẫn (slug) của các danh mục, chuyên mục, thẻ (Tag), nhãn phân quyền.
+## 2) Nhóm quản lý phân loại (Taxonomy)
 
-wp_term_taxonomy: Xác định loại cho từng term (đây là Danh mục bài viết category, Thẻ post_tag, hay Nhãn sản phẩm phan_quyen_san_pham...).
+| Bảng | Chức năng |
+|------|-----------|
+| `wp_terms` | Lưu tên và slug của các danh mục, tag, nhãn phân loại. |
+| `wp_term_taxonomy` | Xác định kiểu của từng term: category, post_tag, product_cat, product_tag,... |
+| `wp_term_relationships` | Liên kết giữa bài viết và các danh mục/tag mà bài đó thuộc về. |
+| `wp_termmeta` | Lưu dữ liệu bổ sung cho từng danh mục hoặc tag như icon, màu sắc, cấu hình riêng. |
 
-wp_term_relationships: Bảng trung gian nối bài viết (wp_posts) với các nhãn/danh mục (wp_terms) xem bài nào thuộc nhãn nào.
+---
 
-wp_termmeta: Lưu thông tin bổ sung cho từng nhãn/danh mục (ví dụ: màu sắc của nhãn, icon chuyên mục...).
+## 3) Nhóm quản lý người dùng (Users)
 
-3. Nhóm Quản Lý Người Dùng (Users)
-wp_users: Lưu thông tin tài khoản cơ bản (Username, Mật khẩu mã hóa, Email, Ngày đăng ký...).
+| Bảng | Chức năng |
+|------|-----------|
+| `wp_users` | Lưu thông tin tài khoản người dùng: username, mật khẩu mã hóa, email, ngày đăng ký. |
+| `wp_usermeta` | Lưu các dữ liệu bổ sung của người dùng như vai trò, quyền hạn, họ tên, avatar, cấu hình admin, session token. |
 
-wp_usermeta: Lưu các thông tin chi tiết và Vai trò (Role/Capabilities), Tên hiển thị, Token phiên đăng nhập của người dùng.
+---
 
-4. Nhóm Cấu Hình Hệ Thống (System Config)
-wp_options: Lưu toàn bộ cài đặt chung của website (Tên web, Địa chỉ URL, Trang chủ là trang nào, các bảng cấu hình phân quyền dùng chung...).
+## 4) Nhóm cấu hình hệ thống (System Config)
 
-wp_links: Bảng cũ còn sót lại từ các phiên bản WordPress trước (dùng để quản lý các liên kết giới thiệu/Bookmark, hiện tại gần như ít sử dụng).
+| Bảng | Chức năng |
+|------|-----------|
+| `wp_options` | Lưu toàn bộ cấu hình của website: tên site, URL, trang chủ, cài đặt plugin, theme, quyền hạn, thiết lập chung. |
+| `wp_links` | Bảng cũ còn sót lại từ các phiên bản WordPress trước, dùng cho quản lý bookmark/liên kết giới thiệu. |
 
-Tóm lại:
-Bất kỳ tính năng mới nào (như Phân quyền VAA DATA, Sản phẩm, Tài liệu) xuất hiện sau này đều chỉ là dữ liệu nhét thêm vào 12 bảng này hoặc do các Plugin tự tạo thêm bảng mới (ví dụ bảng wp_user_role_cat_pro mà bạn thấy ở dự án VAA DATA là bảng tùy biến tạo thêm).
+---
 
+## Kết luận
 
+Bất kỳ tính năng mới nào xuất hiện sau này như:
+- quyền hạn,
+- sản phẩm WooCommerce,
+- dữ liệu plugin,
+- custom fields,
 
+đều chỉ là dữ liệu được lưu thêm vào các bảng gốc này, hoặc được plugin tự tạo thêm bảng riêng nếu cần.
 
-**mấy cái postmeta, usermeta là sau khi cài AFC mưới có hay ban đầu cũng có rồi**
+> Nói cách khác: WordPress không cần plugin mới để có `postmeta` hoặc `usermeta`; những bảng này đã có sẵn từ đầu.
 
-Ban đầu cài WordPress xong là đã có sẵn rồi, không cần cài ACF mới có!
+---
 
-Bản thân WordPress nguyên bản (Core WordPress) đã được thiết kế sẵn các bảng meta này để phục vụ các chức năng mặc định:
+# `postmeta` và `usermeta` có sẵn từ đầu hay không?
 
-1. Khi chưa cài ACF, WordPress dùng postmeta và usermeta để làm gì?
-wp_postmeta (có sẵn):
+Câu trả lời là: **có, đã có sẵn từ lúc WordPress mới cài xong**.
 
-Lưu ảnh đại diện của bài viết (_thumbnail_id)
+Không cần cài ACF mới có `wp_postmeta` hay `wp_usermeta`.
 
-Lưu trạng thái cho phép bình luận
+---
 
-Lưu cấu hình giao diện riêng của bài đó
+## 1) `wp_postmeta` đã có sẵn từ đầu
 
-Lưu các "Trường tùy chỉnh" (Custom Fields) mặc định đơn sơ của WordPress
+WordPress dùng `wp_postmeta` để lưu các dữ liệu mở rộng của bài viết, ví dụ:
 
-wp_usermeta (có sẵn):
+- `_thumbnail_id` (ảnh đại diện bài viết)
+- trạng thái cho phép bình luận
+- cấu hình riêng cho bài viết
+- custom fields đơn giản
+- dữ liệu mà plugin/theme cần lưu
 
-Lưu Vai trò / Quyền hạn của user (wp_capabilities)
+---
 
-Lưu Họ và Tên người dùng (first_name, last_name)
+## 2) `wp_usermeta` đã có sẵn từ đầu
 
-Lưu cấu hình màu giao diện Admin mà user đó chọn (admin_color)
+`wp_usermeta` cũng được WordPress dùng ngay từ đầu để lưu:
 
-Lưu Token phiên đăng nhập (session_tokens)
+- vai trò và quyền hạn của user (`wp_capabilities`)
+- tên người dùng (`first_name`, `last_name`)
+- màu giao diện admin (`admin_color`)
+- session token đăng nhập
+- thông tin cấu hình của người dùng
 
-2. Vậy ACF xuất hiện để làm gì?
-ACF không tạo ra bảng mới trong Database.
+---
 
-ACF chỉ đóng vai trò là một giao diện đẹp và tiện lợi giúp bạn tạo ra các ô nhập liệu nâng cao (như chọn File CAD, chọn Màu, chọn Ngày, bảng lặp Repeater...).
+# ACF làm gì?
 
-Khi bạn điền dữ liệu vào các ô ACF đó và bấm Lưu, ACF chỉ đơn giản là mượn lại bảng wp_postmeta có sẵn của WordPress để cất dữ liệu vào dưới dạng các cặp meta_key và meta_value.
+ACF không tạo ra bảng mới trong database.
+
+ACF chỉ là một công cụ giúp bạn tạo giao diện nhập liệu dễ dùng hơn, ví dụ:
+
+- chọn file
+- chọn màu
+- chọn ngày
+- nhập văn bản dài
+- repeater / group field
+- layout phức tạp hơn
+
+Khi bạn lưu dữ liệu trong ACF, thực chất ACF đang lưu vào các bảng có sẵn của WordPress, chủ yếu là:
+
+- `wp_postmeta`
+- `wp_usermeta`
+- `wp_options` (đối với cấu hình của field group, theme options,...)
+
+Nói ngắn gọn:
+
+> ACF không tạo mới database, nó chỉ là một lớp giao diện để thao tác dữ liệu trên các bảng sẵn có của WordPress.
+
+---
+
+## Ví dụ đơn giản
+
+Nếu bạn tạo một Custom Field trong ACF cho bài viết:
+
+- tên field: `location`
+- giá trị: `Hà Nội`
+
+Thì dữ liệu này sẽ được lưu vào:
+
+```sql
+wp_postmeta

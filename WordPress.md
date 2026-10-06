@@ -128,3 +128,48 @@ Thì dữ liệu này sẽ được lưu vào:
 
 ```sql
 wp_postmeta
+
+## III. SINGLE PAGE - Quy tắc xác định
+
+### Câu hỏi: Khi tạo một post type mới, làm sao WordPress biết dùng file nào để hiển thị trang chi tiết của bài viết?
+
+---
+
+### 1. Quy tắc
+
+Trang xem chi tiết (single page) của một bài viết có tên file:
+
+
+**Giải thích chi tiết:**
+
+- `single-` là phần **cố định** do WordPress quy định, ý chỉ "trang xem MỘT bài"
+- `<post_type>` là tên loại bài, phải khớp đúng với giá trị cột `post_type` trong bảng `wp_posts`
+- File này chạy cho **MỌI bài** thuộc loại đó (không phân biệt từng bài riêng)
+- Slug của bài (cột `post_name`) chỉ quyết định **URL**, KHÔNG quyết định file template
+
+---
+
+### 2. Luồng từ lúc tạo đến lúc hiển thị
+
+**a) Dev tạo loại bài** (ACF → Post Types, hoặc viết code)
+   - Tên khóa của loại bài chính là `post_type`
+   - Ví dụ: `product`, `tai-lieu`, `doi-tac`, `test-posttypenew`
+
+**b) Khi nhập liệu và bấm Đăng**
+   - Bài được lưu thành MỘT DÒNG trong bảng `wp_posts`
+   - Cột `post_type` = tên loại bài đó
+
+**c) Người dùng mở URL của bài**
+   - WordPress tra trong DB: URL này là bài nào, `post_type` là gì
+
+**d) WordPress ghép tên file**
+   - Công thức: `"single-" + post_type + ".php"`
+   - Ví dụ: nếu `post_type = "product"` → tìm file `single-product.php`
+
+**e) Kiểm tra và render**
+   - Có file thì dùng file đó
+   - Không có thì dùng phương án dự phòng (xem mục 3)
+
+---
+
+### 3. Thứ tự WordPress tìm file (lấy đầu tiên tìm thấy)

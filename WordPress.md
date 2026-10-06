@@ -135,41 +135,97 @@ wp_postmeta
 
 ---
 
-### 1. Quy tắc
+TRANG CHI TIẾT (SINGLE) TRONG WORDPRESS – TÊN FILE ĐI THEO POST_TYPE
+======================================================================
 
-Trang xem chi tiết (single page) của một bài viết có tên file:
+1. QUY TẮC
+----------
+Trang chi tiết (xem một bài) có tên file:
 
+    single-<post_type>.php
 
-**Giải thích chi tiết:**
+ - "single-" là phần CỐ ĐỊNH do WordPress quy định, nghĩa là "trang xem MỘT bài".
+ - <post_type> là tên loại bài, đúng bằng giá trị cột post_type trong bảng wp_posts.
+ - File này chạy cho MỌI bài thuộc loại đó (không phân biệt từng bài).
+ - Slug của từng bài (cột post_name) chỉ quyết định URL, KHÔNG quyết định file.
 
-- `single-` là phần **cố định** do WordPress quy định, ý chỉ "trang xem MỘT bài"
-- `<post_type>` là tên loại bài, phải khớp đúng với giá trị cột `post_type` trong bảng `wp_posts`
-- File này chạy cho **MỌI bài** thuộc loại đó (không phân biệt từng bài riêng)
-- Slug của bài (cột `post_name`) chỉ quyết định **URL**, KHÔNG quyết định file template
+2. LUỒNG TỪ LÚC TẠO ĐẾN LÚC HIỂN THỊ
+------------------------------------
+ a) Dev tạo loại bài (ACF -> Post Types, hoặc viết code). Tên khóa của loại bài
+    chính là post_type, ví dụ: product, tai-lieu, doi-tac, test-posttypenew.
+ b) Khi nhập liệu và bấm Đăng, bài được lưu thành MỘT DÒNG trong bảng wp_posts,
+    cột post_type = tên loại bài đó.
+ c) Người dùng mở URL của bài. WordPress tra trong DB: URL này là bài nào,
+    post_type là gì.
+ d) WordPress ghép tên file: "single-" + post_type + ".php" rồi tìm file đó trong theme.
+ e) Có file thì dùng file đó. Không có thì dùng phương án dự phòng (mục 3).
 
----
+3. THỨ TỰ WORDPRESS TÌM FILE (lấy đầu tiên tìm thấy)
+----------------------------------------------------
+    1. single-<post_type>-<slug của bài>.php   (làm riêng cho đúng một bài, ít dùng)
+    2. single-<post_type>.php                  (cho mọi bài của loại đó)  <-- dùng cái này
+    3. single.php                              (dự phòng chung cho mọi loại bài)
+    4. index.php                               (dự phòng cuối cùng)
 
-### 2. Luồng từ lúc tạo đến lúc hiển thị
+Vì vậy loại bài chưa có file riêng thì rơi về single.php.
+Trong project này: loại "post" (tin tức) không có single-post.php nên dùng single.php.
 
-**a) Dev tạo loại bài** (ACF → Post Types, hoặc viết code)
-   - Tên khóa của loại bài chính là `post_type`
-   - Ví dụ: `product`, `tai-lieu`, `doi-tac`, `test-posttypenew`
+4. VÍ DỤ TRONG PROJECT
+----------------------
+    post_type            URL của bài                          File được chạy
+    -------------------  -----------------------------------  ------------------------
+    product              /san-pham/<slug-bai>/                single-product.php
+    tai-lieu             /tai-lieu/<slug-bai>/                single-tai-lieu.php
+    doi-tac              /doi-tac/<slug-bai>/                 single-doi-tac.php
+    test-posttypenew     /test-posttypenew/posttypenew1/      single-test-posttypenew.php
+    post (tin tức)       /<slug-bai>/ (tùy cấu hình URL)      single.php (dự phòng)
 
-**b) Khi nhập liệu và bấm Đăng**
-   - Bài được lưu thành MỘT DÒNG trong bảng `wp_posts`
-   - Cột `post_type` = tên loại bài đó
+Đã kiểm chứng ở local:
+ - Tạo loại bài "test-posttypenew", đăng bài slug "posttypenew1" (ID 8806).
+ - Tạo file single-test-posttypenew.php -> mở URL thấy đúng nội dung của file đó.
+ - Đổi tên file thành single-document.php -> bài tài liệu rơi về single.php.
 
-**c) Người dùng mở URL của bài**
-   - WordPress tra trong DB: URL này là bài nào, `post_type` là gì
+5. LƯU Ý QUAN TRỌNG
+-------------------
+ - Phần sau "single-" phải khớp ĐÚNG post_type, kể cả dấu gạch ngang
+   (tai-lieu, không phải tai_lieu).
+ - Phần đầu URL (ví dụ /san-pham/) là tiền tố "rewrite" đặt riêng. Nó THƯỜNG
+   trùng post_type nhưng KHÔNG LUÔN: sản phẩm có URL /san-pham/ nhưng post_type là product.
+   Tên file luôn theo post_type, không theo URL.
+ - Người nhập liệu không đặt được post_type. Chỉ dev đặt một lần khi tạo loại bài.
+ - Ba thứ dễ lẫn:
+       post_type  = loại bài          (cột wp_posts.post_type)      -> quyết định tên file
+       post_name  = slug của một bài  (cột wp_posts.post_name)      -> quyết định URL
+       tiền tố URL = rewrite slug     (cài đặt khi tạo loại bài)    -> phần đầu của URL
 
-**d) WordPress ghép tên file**
-   - Công thức: `"single-" + post_type + ".php"`
-   - Ví dụ: nếu `post_type = "product"` → tìm file `single-product.php`
+6. CÁCH KIỂM TRA NHANH
+----------------------
+ a) Xem có những loại bài nào (chính là các "abc" trong single-abc.php):
+        SELECT DISTINCT post_type FROM wp_posts;
+ b) Mở trang bài bất kỳ, bấm F12, gõ trong Console:
+        document.body.className
+    Có class dạng "single-<post_type>" (ví dụ single-tai-lieu).
+ c) Nếu trang chạy sai giao diện, kiểm tra tên file có khớp post_type chưa.
 
-**e) Kiểm tra và render**
-   - Có file thì dùng file đó
-   - Không có thì dùng phương án dự phòng (xem mục 3)
+7. THÊM MỘT LOẠI BÀI MỚI VÀ GIAO DIỆN RIÊNG
+--------------------------------------------
+ 1. ACF -> Post Types -> Add new, đặt khóa (post_type), ví dụ: tin-tuyen-dung.
+ 2. Nhập liệu và đăng ít nhất một bài.
+ 3. Tạo file single-tin-tuyen-dung.php trong theme VKT.
+ 4. Bên trong file thường có: get_header(); ... nội dung hoặc get_template_part(...); ... get_footer();
+ 5. Nếu cần CSS/JS riêng, thêm một nhánh nạp trong import_css_js/import_css_js.php
+    (project này không tự nạp).
 
----
+8. QUY TẮC TƯƠNG TỰ CHO NHÓM PHÂN LOẠI (TAXONOMY)
+-------------------------------------------------
+    taxonomy-<tên taxonomy>.php   chạy cho MỌI mục của nhóm đó.
+    Ví dụ: taxonomy-linh-vuc.php (mọi lĩnh vực), taxonomy-bo-suu-tap.php (mọi nhãn hàng).
+    Dự phòng: taxonomy.php, rồi archive.php, rồi index.php.
 
-### 3. Thứ tự WordPress tìm file (lấy đầu tiên tìm thấy)
+9. SO SÁNH VỚI template-pages/
+------------------------------
+    File ở gốc theme (single-*.php, taxonomy-*.php, front-page.php, search.php):
+        WordPress TỰ chọn theo loại URL và tên file.
+    File trong template-pages/ (có dòng "Template Name: ..."):
+        ADMIN CHỌN TAY ở ô "Template" khi sửa một Page; lựa chọn lưu trong DB
+        (wp_postmeta, khóa _wp_page_template).

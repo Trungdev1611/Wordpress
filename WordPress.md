@@ -90,8 +90,63 @@ WordPress dùng `wp_postmeta` để lưu các dữ liệu mở rộng của bài
 - session token đăng nhập
 - thông tin cấu hình của người dùng
 
+
+## Ví dụ data base
+## Ví dụ thực tế: Bảng dữ liệu cho Sản phẩm
+
+### 1. Bảng `wp_posts` (Lưu thông tin gốc của Bài viết)
+
+Chỉ lưu các trường cơ bản mặc định:
+
+| ID | post_title | post_content | post_type | post_status |
+|-----|-----------|--------------|-----------|------------|
+| 8014 | Bơm chữa cháy ABC | Máy bơm công suất lớn dùng cho hệ thống PCCC... | product | publish |
+
 ---
 
+### 2. Bảng `wp_postmeta` (Lưu các trường mở rộng / Trường tạo bởi ACF)
+
+Toàn bộ thông số kỹ thuật, giá, file CAD/3D nằm ở đây dưới dạng cặp `meta_key` - `meta_value`:
+
+| meta_id | post_id | meta_key | meta_value | Ghi chú |
+|---------|---------|----------|------------|---------|
+| 5000 | 8014 | _gia_san_pham | 15000000 | Trường mở rộng thường |
+| 5002 | 8014 | cong_suat_kw | 45 | Trường ACF (Số) |
+| 5003 | 8014 | tieu_chuan_pccc | TCVN 3890:2023 | Trường ACF (Văn bản) |
+| 5004 | 8014 | file_cad_dwg | 1052 | Trường ACF (Lưu ID của File trong Media) |
+| 5005 | 8014 | danh_sach_phu_kien | a:2:{i:0;s:6:"Van một chiều";i:1;s:6:"Đồng hồ áp";} | Trường ACF Mảng (Serialized Data) |
+
+---
+
+### 3. Bảng `wp_term_relationships` (Lưu liên kết Nhãn Phân Quyền & Lĩnh Vực)
+
+Liên kết sản phẩm 8014 với các Nhãn/Chuyên mục được tích chọn ở cột bên phải:
+
+| object_id | term_taxonomy_id
+
+---
+
+### 4. Bảng `wp_options` (Lưu Bảng Quyền của Role để so khớp)
+
+Dòng cấu hình phân quyền cho sản phẩm (Row `wp_user_role_cat_pro`):
+
+| option_id | option_name | option_value |
+|-----------|-------------|--------------|
+| 1001 | wp_user_role_cat_pro | {"hang_bac": [12], "inno": [12, 15]} |
+
+**Giải thích:**
+- `option_name` = `wp_user_role_cat_pro` (khóa lưu trữ)
+- `option_value` = JSON chứa danh sách nhóm người dùng
+  - `"hang_bac"` = [12] (ID user 12 có quyền xem nhóm "hang_bac")
+  - `"inno"` = [12, 15] (ID user 12, 15 có quyền xem nhóm "inno")
+
+**Truy vấn SQL:**
+```sql
+SELECT * FROM wp_options 
+WHERE option_name = 'wp_user_role_cat_pro';
+
+
+5. 
 # ACF làm gì?
 
 ACF không tạo ra bảng mới trong database.
